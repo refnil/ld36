@@ -41,15 +41,15 @@ WorldGenerator.prototype.addRandomObstacle = function(world) {
 };
 
 WorldGenerator.prototype.makeBounds = function(world) {
-    var width = world.width;
-    var borderArea = width - (this.playableSize * this.playableSize);
     
     var position = [];
 
-    var xleft = -width/2;
-    var xright = width/2-this.border;
-    var ybot = xright;
-    var ytop = xleft;
+    var playable = this.playableRectangle();
+
+    var xleft = playable.left - this.border;
+    var xright = playable.right;
+    var ybot = playable.bottom;
+    var ytop = playable.top - this.border;
 
     var distance = 64;
 
@@ -128,7 +128,7 @@ WorldGenerator.prototype.playableRectangle = function() {
 };
 
 WorldGenerator.prototype.worldBounds = function() {
-    var half = this.playableSize/2 + this.border;
+    var half = this.playableSize/2 + this.border/2;
     var full = half * 2;
     return new Phaser.Rectangle(-half, -half, full, full);
 };
