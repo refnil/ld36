@@ -22,6 +22,7 @@ WorldGenerator.prototype.generate = function(game) {
     game.world.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 
     this.groundSprite = game.add.tileSprite(0,0,game.camera.width,game.camera.height,this.ground);
+    this.groundSprite.fixedToCamera = true;
     game.world.sendToBack(this.groundSprite);
 
     for(var i = 0; i < 10; i++)
@@ -40,15 +41,15 @@ WorldGenerator.prototype.addRandomObstacle = function(world) {
 };
 
 WorldGenerator.prototype.makeBounds = function(world) {
-    var width = world.width;
-    var borderArea = width - (this.playableSize * this.playableSize);
     
     var position = [];
 
-    var xleft = -width/2;
-    var xright = width/2-this.border;
-    var ybot = xright;
-    var ytop = xleft;
+    var playable = this.playableRectangle();
+
+    var xleft = playable.left - this.border;
+    var xright = playable.right;
+    var ybot = playable.bottom;
+    var ytop = playable.top - this.border;
 
     var distance = 64;
 
@@ -116,11 +117,9 @@ WorldGenerator.prototype.preload = function(game) {
 };
 
 WorldGenerator.prototype.update = function(game) {
-    var view = game.camera.view;
-    this.groundSprite.x = view.x;
-    this.groundSprite.y = view.y;
-    this.groundSprite.tilePosition.x = view.x % 128;
-    this.groundSprite.tilePosition.y = view.y % 128;
+    var view = game.camera;
+    this.groundSprite.tilePosition.x = -view.x;
+    this.groundSprite.tilePosition.y = -view.y;
 };
 
 WorldGenerator.prototype.playableRectangle = function() {
@@ -129,7 +128,7 @@ WorldGenerator.prototype.playableRectangle = function() {
 };
 
 WorldGenerator.prototype.worldBounds = function() {
-    var half = this.playableSize/2 + this.border;
+    var half = this.playableSize/2 + this.border/2;
     var full = half * 2;
     return new Phaser.Rectangle(-half, -half, full, full);
 };
