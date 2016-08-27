@@ -1,6 +1,7 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
 var worldGen = {}
+var player = {}
 
 var debug = true;
 var toggleDebug;
@@ -19,16 +20,22 @@ function preload() {
         worldGen = new WorldGenerator();
         worldGen.preload(game);
     });
-    game.load.image('player','assets/medieval-rts/PNG/Retina/Unit/medievalUnit_02.png')
+    game.load.script("src/player", null, function() {
+        player = new Player();
+        player.preload(game);
+    });
 }
 
 function create() {
+    game.physics.startSystem(Phaser.Physics.ARCADE);
     worldGen.generate(game);
+    player.generate(game)
     toggleDebug = game.input.keyboard.addKey(Phaser.Keyboard.P);
     toggleDebug.onDown.add(toggleDebugFun);
 }
 
 function update() {
+    player.update(game);
 }
 
 var origin = new Phaser.Circle(0, 0, 25);
