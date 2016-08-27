@@ -8,9 +8,10 @@ function Player(){
 }
 
 Player.prototype.generate = function(game){
-    this.sprite = game.add.sprite(game.world.centerX,game.world.centerY,'player');  
+    this.sprite = game.add.sprite(game.world.centerX-64,game.world.centerY-64,'player');  
     
     game.physics.arcade.enable(this.sprite);
+    this.sprite.body.setSize(64,64,32,32);
 
     cursors = game.input.keyboard.createCursorKeys();
     
