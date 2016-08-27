@@ -5,6 +5,15 @@ var worldGen = {}
 var debug = true;
 var toggleDebug;
 
+function toggleDebugFun()
+{
+    if(debug)
+    {
+        game.debug.reset();
+    }
+    debug = !debug;
+}
+
 function preload() {
     game.load.script("src/world", null, function() {
         worldGen = new WorldGenerator();
@@ -15,16 +24,10 @@ function preload() {
 function create() {
     worldGen.generate(game);
     toggleDebug = game.input.keyboard.addKey(Phaser.Keyboard.P);
+    toggleDebug.onDown.add(toggleDebugFun);
 }
 
 function update() {
-    if(toggleDebug.isDown) {
-        if(debug)
-        {
-            game.debug.reset();
-        }
-        debug = !debug;
-    }
 }
 
 var origin = new Phaser.Circle(0, 0, 25);
