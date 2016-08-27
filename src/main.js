@@ -7,10 +7,12 @@ function preload() {
         worldGen = new WorldGenerator();
         worldGen.preload(game);
     });
+    game.load.image('player','assets/medieval-rts/PNG/Retina/Unit/medievalUnit_02.png')
 }
 
 function create() {
     worldGen.generate(game);
+    player.player(game);
 }
 
 function update() {
