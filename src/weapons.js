@@ -11,17 +11,16 @@ Weapon.prototype.create = function(game,player){
     
     weapon.fireRate = 300;
 
-    weapon.trackSprite(player.sprite,60,60, true);
+    weapon.trackSprite(player.sprite,85,65, true);
 
-    cursors = game.input.keyboard.createCursorKeys();
-    fire = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+    game.input.mouse.capture = true;
 
 }
 
 Weapon.prototype.update = function(game){
-    if (fire.isDown)
+    if (game.input.activePointer.leftButton.isDown)
     {
-        weapon.fire();
+        weapon.fireAtPointer(game.input.mousePointer);
     }
 };
 
