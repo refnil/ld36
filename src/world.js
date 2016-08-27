@@ -16,10 +16,24 @@ function WorldGenerator(){
 WorldGenerator.prototype.generate = function(game) {
     var xy = this.width/2;
     var width = this.width;
- //   game.world.bounds = new Rectangle(xy,xy,width,width);
+    game.world.setBounds(xy,xy,width,width);
 
-    game.add.tileSprite(0,0,1024,1024,this.ground);
+    game.add.tileSprite(-100,-100,1600,1600,this.ground);
+
+    for(var i = 0; i < 10; i++)
+    {
+        this.addRandomObstacle(game.world);
+    }
 };
+
+WorldGenerator.prototype.addRandomObstacle = function(world) {
+    world.create(world.randomX, world.randomY,Phaser.ArrayUtils.getRandomItem(this.obstacle));
+}
+
+WorldGenerator.prototype.makeBounds = function(world) {
+
+
+}
 
 WorldGenerator.prototype.preload = function(game) {
     var basePath = "assets/medieval-rts/PNG/Retina/";
