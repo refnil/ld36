@@ -25,6 +25,7 @@ function create() {
     worldGen.generate(game);
     toggleDebug = game.input.keyboard.addKey(Phaser.Keyboard.P);
     toggleDebug.onDown.add(toggleDebugFun);
+
 }
 
 function update() {
@@ -40,6 +41,8 @@ function render() {
         // Camera
         game.debug.cameraInfo(game.camera, x, y += yi);
         game.debug.geom(origin,'rgba(266,0,0,1)');
+
+        worldGen.debug(game);
 
     }
 }
