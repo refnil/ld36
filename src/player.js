@@ -7,7 +7,7 @@ function Player(){
     this.skin = 'player';
 }
 
-Player.prototype.generate = function(game){
+Player.prototype.generate = function(game,weapon){
     this.sprite = game.add.sprite(game.world.centerX,game.world.centerY,'player');  
     
     game.physics.arcade.enable(this.sprite);
