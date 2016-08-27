@@ -15,7 +15,6 @@ function preload() {
 
 function create() {
     worldGen.generate(game);
-    player.player(game);
     toggleDebug = game.input.keyboard.addKey(Phaser.Keyboard.P);
 }
 

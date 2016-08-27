@@ -4,5 +4,5 @@ function Player(game){
     this.force = 100;
     this.speed = 100;
     this.inventory = [];
-    game.add.sprite(game.world.width-100,game.world.height-100,'player')
+    game.add.sprite(800,800,'player')
 }
