@@ -38,7 +38,6 @@ function create() {
     bullet.create(game,player);
     toggleDebug = game.input.keyboard.addKey(Phaser.Keyboard.P);
     toggleDebug.onDown.add(toggleDebugFun);
-
 }
 
 function update() {
