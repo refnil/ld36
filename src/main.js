@@ -2,6 +2,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 
 var worldGen = {};
 var player = {};
+var bullet = {};
 
 var debug = true;
 var toggleDebug;
@@ -24,12 +25,17 @@ function preload() {
         player = new Player();
         player.preload(game);
     });
+    game.load.script("src/weapons", null, function(){
+        bullet = new Weapon();
+        bullet.preload(game);
+    });
 }
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     worldGen.generate(game);
-    player.generate(game)
+    player.generate(game);
+    bullet.create(game,player);
     toggleDebug = game.input.keyboard.addKey(Phaser.Keyboard.P);
     toggleDebug.onDown.add(toggleDebugFun);
 
@@ -37,6 +43,7 @@ function create() {
 
 function update() {
     player.update(game);
+    bullet.update(game);
     worldGen.update(game);
     game.physics.arcade.collide(player.sprite, worldGen.terrainGroup);
 }
