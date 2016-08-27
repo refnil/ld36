@@ -3,30 +3,41 @@ function WorldGenerator(){
 
     this.ground = "ground";
 
-    this.playableSize = 400;
+    this.playableSize = 800;
     this.border = 128;
+
+    this.terrainGroup = null;
+    this.groundSprite = null;
 }
 
 
 WorldGenerator.prototype.generate = function(game) {
 
+    this.terrainGroup = game.add.group();
+    this.terrainGroup.enableBody = true;
+    this.physicsBodyType = Phaser.Physics.ARCADE;
+
     var bounds = this.worldBounds();
 
     game.world.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 
-    game.add.tileSprite(0,0,300,300,this.ground);
+    this.groundSprite = game.add.tileSprite(0,0,game.camera.width,game.camera.height,this.ground);
+    game.world.sendToBack(this.groundSprite);
 
     for(var i = 0; i < 10; i++)
     {
         this.addRandomObstacle(game.world);
     }
+
     this.makeBounds(game.world);
 };
 
 WorldGenerator.prototype.addRandomObstacle = function(world) {
     var playable = this.playableRectangle();
-    world.create(playable.randomX, playable.randomY,Phaser.ArrayUtils.getRandomItem(this.obstacle));
-}
+    playable.width -= this.border;
+    playable.height-= this.border;
+    this.createTerrain(playable.randomX, playable.randomY);
+};
 
 WorldGenerator.prototype.makeBounds = function(world) {
     var width = world.width;
@@ -74,9 +85,14 @@ WorldGenerator.prototype.makeBounds = function(world) {
     });
 
     position.forEach(function(pos) {
-        world.create(pos.x+world.game.rnd.integerInRange(-20,20), pos.y+world.game.rnd.integerInRange(-20,20), Phaser.ArrayUtils.getRandomItem(obstacle));
-    });
-}
+        this.createTerrain(pos.x+world.game.rnd.integerInRange(-20,20), pos.y+world.game.rnd.integerInRange(-20,20));
+    },this);
+};
+
+WorldGenerator.prototype.createTerrain = function(x, y){
+    var sprite = this.terrainGroup.create(x,y,Phaser.ArrayUtils.getRandomItem(this.obstacle));
+    sprite.body.immovable = true;
+};
 
 WorldGenerator.prototype.preload = function(game) {
     var basePath = "assets/medieval-rts/PNG/Retina/";
@@ -99,16 +115,24 @@ WorldGenerator.prototype.preload = function(game) {
     }
 };
 
+WorldGenerator.prototype.update = function(game) {
+    var view = game.camera.view;
+    this.groundSprite.x = view.x;
+    this.groundSprite.y = view.y;
+    this.groundSprite.tilePosition.x = view.x % 128;
+    this.groundSprite.tilePosition.y = view.y % 128;
+};
+
 WorldGenerator.prototype.playableRectangle = function() {
     var half = this.playableSize/2;
     return new Phaser.Rectangle(-half, -half, this.playableSize, this.playableSize);
-}
+};
 
 WorldGenerator.prototype.worldBounds = function() {
     var half = this.playableSize/2 + this.border;
     var full = half * 2;
     return new Phaser.Rectangle(-half, -half, full, full);
-}
+};
 
 WorldGenerator.prototype.debug = function(game) { 
     game.debug.geom(this.playableRectangle(), 'red', false);

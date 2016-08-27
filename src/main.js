@@ -1,12 +1,12 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
-var worldGen = {}
+var worldGen = {};
 
 var debug = true;
 var toggleDebug;
+var origin = new Phaser.Circle(0, 0, 25);
 
-function toggleDebugFun()
-{
+function toggleDebugFun() {
     if(debug)
     {
         game.debug.reset();
@@ -29,9 +29,9 @@ function create() {
 }
 
 function update() {
+    worldGen.update(game);
 }
 
-var origin = new Phaser.Circle(0, 0, 25);
 function render() {
     if(debug){
         var x = 5;
