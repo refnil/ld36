@@ -22,6 +22,7 @@ WorldGenerator.prototype.generate = function(game) {
     game.world.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 
     this.groundSprite = game.add.tileSprite(0,0,game.camera.width,game.camera.height,this.ground);
+    this.groundSprite.fixedToCamera = true;
     game.world.sendToBack(this.groundSprite);
 
     for(var i = 0; i < 10; i++)
@@ -116,11 +117,9 @@ WorldGenerator.prototype.preload = function(game) {
 };
 
 WorldGenerator.prototype.update = function(game) {
-    var view = game.camera.view;
-    this.groundSprite.x = view.x;
-    this.groundSprite.y = view.y;
-    this.groundSprite.tilePosition.x = view.x % 128;
-    this.groundSprite.tilePosition.y = view.y % 128;
+    var view = game.camera;
+    this.groundSprite.tilePosition.x = -view.x;
+    this.groundSprite.tilePosition.y = -view.y;
 };
 
 WorldGenerator.prototype.playableRectangle = function() {
