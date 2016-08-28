@@ -88,6 +88,11 @@ Enemy.prototype.render = function () {
 Enemy.prototype.hit = function(damage) {
     this.life -= damage;
     if(this.life <= 0) {
+        if(this.game.rnd.between(0,100) > 75){
+            item = new Item(this.main);
+            item.generate(this.sprite.centerX,this.sprite.centerY);
+            this.main.itemGroup.add(item.sprite);
+        };
         this.sprite.destroy();
     }
 }

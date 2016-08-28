@@ -7,6 +7,7 @@ function Main(){
     this.enemiesGroup = {};
     this.spawners = [];
     this.panel = {};
+    this.itemGroup = {};
 
     this.debug = false;
 
@@ -27,6 +28,7 @@ Main.prototype.preload = function () {
     this.loadScript("Enemy", "src/Enemy/enemy.js");
     this.loadScript("Lifebar", "src/lifebar.js");
     this.loadScript("Panel", "src/panel.js");
+    this.loadScript("Item", "src/item.js");
 };
 
 Main.prototype.loadScript = function(className, path) {
@@ -62,6 +64,10 @@ Main.prototype.create = function() {
     this.panel = new Panel(this);
     this.panel.generate();
 
+    this.itemGroup = this.game.add.group();
+    this.itemGroup.enableBody = true;
+    this.itemGroup.physicsBodyType = Phaser.Physics.ARCADE;
+
     this.spawners = this.worldGen.spawners;
     this.game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(Main.prototype.toggleDebug,this);
 };
@@ -79,6 +85,8 @@ Main.prototype.update = function () {
     this.game.physics.arcade.collide(this.enemiesGroup, this.worldGen.terrainGroup);
     this.game.physics.arcade.collide(this.playerWeapon.weapon.bullets, this.enemiesGroup, Weapon.bulletHitEnemy);
     this.game.physics.arcade.collide(this.playerWeapon.weapon.bullets, this.worldGen.terrainGroup, Weapon.bulletHitKill);
+
+    this.game.physics.arcade.overlap(this.player.sprite,this.itemGroup,collectItem);
 
 };
 

@@ -11,8 +11,6 @@ function Panel(main) {
 Panel.prototype.generate = function(){
 
     this.panelSprite = this.main.add.group();
-    // this.inventorySpriteGroup = [];
-        // this.main.add.group()
 
     this.bitmap = this.main.game.add.bitmapData(this.main.game.width-600, this.main.game.height);
     this.bitmap.fill(44,117,255,1);
@@ -33,13 +31,6 @@ Panel.prototype.generate = function(){
 
 
     this.panelSprite.create(600,0,this.bitmap);
-
-    // this.inventorySpriteGroup.create(2032,250,'boxe');
-    // for (var i = 0; i < 5; i++)
-    // {
-    //     this.inventorySpriteGroup.create(600+64*i,300,'boxe');
-    // }
-    // this.inventorySpriteGroup.setAllChildren('scale',0.3)
 
     this.panelSprite.addMultiple(this.inventorySpriteGroup);    
     this.panelSprite.fixedToCamera = true;
