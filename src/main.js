@@ -6,6 +6,7 @@ function Main(){
     this.playerWeapon = {};
     this.enemiesGroup = {};
     this.spawners = [];
+    this.panel = {};
 
     this.debug = false;
 
@@ -25,7 +26,7 @@ Main.prototype.preload = function () {
     this.loadScript("EnemyFactory", "src/Enemy/enemyfactory.js");
     this.loadScript("Enemy", "src/Enemy/enemy.js");
     this.loadScript("Lifebar", "src/lifebar.js");
-
+    this.loadScript("Panel", "src/panel.js");
 };
 
 Main.prototype.loadScript = function(className, path) {
@@ -41,7 +42,9 @@ Main.prototype.loadScript = function(className, path) {
 };
 
 Main.prototype.create = function() {
+
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
 
     this.enemiesGroup = this.game.add.group();
     this.enemiesGroup.enableBody = true;
@@ -55,6 +58,9 @@ Main.prototype.create = function() {
 
     this.playerWeapon = new Weapon(this);
     this.playerWeapon.create();
+
+    this.panel = new Panel(this);
+    this.panel.generate();
 
     this.spawners = this.worldGen.spawners;
     this.game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(Main.prototype.toggleDebug,this);
