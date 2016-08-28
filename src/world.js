@@ -1,39 +1,38 @@
-function WorldGenerator() {
-    this.obstacle = [];
+function WorldGenerator(main, playableSize, border) {
+    this.main = main;
 
-    this.ground = "ground";
-
-    this.playableSize = 800;
-    this.border = 128;
+    this.playableSize = playableSize || 800;
+    this.border = border || 128;
 
     this.terrainGroup = null;
     this.groundSprite = null;
 }
 
 
-WorldGenerator.prototype.generate = function(game) {
+WorldGenerator.prototype.generate = function() {
 
-    this.terrainGroup = game.add.group();
+    this.terrainGroup = this.main.game.add.group();
     this.terrainGroup.enableBody = true;
     this.physicsBodyType = Phaser.Physics.ARCADE;
 
     var bounds = this.worldBounds();
 
-    game.world.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+    this.main.game.world.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 
-    this.groundSprite = game.add.tileSprite(0,0,game.camera.width,game.camera.height,this.ground);
+    this.groundSprite = this.main.game.add.tileSprite(0,0,this.main.game.camera.width,this.main.game.camera.height,WorldGenerator.ground);
     this.groundSprite.fixedToCamera = true;
-    game.world.sendToBack(this.groundSprite);
+    this.main.game.world.sendToBack(this.groundSprite);
 
     for(var i = 0; i < 10; i++)
     {
-        this.addRandomObstacle(game.world);
+        this.addRandomObstacle();
     }
 
-    this.makeBounds(game.world);
+    this.makeBounds();
 };
 
-WorldGenerator.prototype.addRandomObstacle = function(world) {
+WorldGenerator.prototype.addRandomObstacle = function() {
+    var world = this.main.game.world;
     var playable = this.playableRectangle();
     playable.width -= this.border;
     playable.height-= this.border;
@@ -44,7 +43,8 @@ WorldGenerator.prototype.addRandomObstacle = function(world) {
     }
 };
 
-WorldGenerator.prototype.makeBounds = function(world) {
+WorldGenerator.prototype.makeBounds = function() {
+    var world = this.main.game.world;
     
     var position = [];
 
@@ -57,8 +57,8 @@ WorldGenerator.prototype.makeBounds = function(world) {
 
 
     //Top and bottom border
-    var texture = game.add.renderTexture(playable.width, this.border);
-    game.cache.addImage('emptyHor', null, texture.getImage());
+    var texture = this.main.game.add.renderTexture(playable.width, this.border);
+    this.main.game.cache.addImage('emptyHor', null, texture.getImage());
     var sprite = this.terrainGroup.create(playable.left,ytop,'emptyHor');
     sprite.body.immovable = true;
     sprite = this.terrainGroup.create(playable.left, ybot, 'emptyHor');
@@ -66,8 +66,8 @@ WorldGenerator.prototype.makeBounds = function(world) {
 
 
     //Left and right border
-    texture = game.add.renderTexture(this.border, playable.height);
-    game.cache.addImage('emptyVer', null, texture.getImage());
+    texture = this.main.game.add.renderTexture(this.border, playable.height);
+    this.main.game.cache.addImage('emptyVer', null, texture.getImage());
     sprite = this.terrainGroup.create(xleft, playable.top,'emptyVer');
     sprite.body.immovable = true;
     sprite = this.terrainGroup.create(xright, playable.top , 'emptyVer');
@@ -89,7 +89,7 @@ WorldGenerator.prototype.makeBounds = function(world) {
     }
 
 
-    obstacle = this.obstacle;
+    obstacle = WorldGenerator.obstacle;
     position.sort(function(pos1, pos2) {
         if(pos1.y < pos2.y){
             return -1;
@@ -108,13 +108,14 @@ WorldGenerator.prototype.makeBounds = function(world) {
         }
     });
 
+    var rnd = this.main.game.rnd;
     position.forEach(function(pos) {
-        world.create(pos.x+world.game.rnd.integerInRange(-20,20), pos.y+world.game.rnd.integerInRange(-20,20), this.randomObstacle());
+        world.create(pos.x+rnd.integerInRange(-20,20), pos.y+rnd.integerInRange(-20,20), this.randomObstacle());
     },this);
 };
 
 WorldGenerator.prototype.randomObstacle = function() {
-    return Phaser.ArrayUtils.getRandomItem(this.obstacle);
+    return Phaser.ArrayUtils.getRandomItem(WorldGenerator.obstacle);
 };
 
 WorldGenerator.prototype.createTerrain = function(x, y){
@@ -123,9 +124,33 @@ WorldGenerator.prototype.createTerrain = function(x, y){
     sprite.body.setSize(64,64,32,32);
 };
 
-WorldGenerator.prototype.preload = function(game) {
+WorldGenerator.prototype.update = function() {
+    var view = this.main.game.camera;
+    this.groundSprite.tilePosition.x = -view.x;
+    this.groundSprite.tilePosition.y = -view.y;
+};
+
+WorldGenerator.prototype.playableRectangle = function() {
+    var half = this.playableSize/2;
+    return new Phaser.Rectangle(-half, -half, this.playableSize, this.playableSize);
+};
+
+WorldGenerator.prototype.worldBounds = function() {
+    var half = this.playableSize/2 + this.border/2;
+    var full = half * 2;
+    return new Phaser.Rectangle(-half, -half, full, full);
+};
+
+WorldGenerator.prototype.debug = function() { 
+    this.main.game.debug.geom(this.playableRectangle(), 'red', false);
+    this.main.game.debug.geom(this.worldBounds(), 'blue', false);
+};
+
+WorldGenerator.ground = "ground";
+WorldGenerator.obstacle = [];
+WorldGenerator.preload = function(game) {
     var basePath = "assets/medieval-rts/PNG/Retina/";
-    game.load.image(this.ground, basePath + "Tile/medievalTile_57.png"); 
+    game.load.image(WorldGenerator.ground, basePath + "Tile/medievalTile_57.png"); 
 
     filepaths = [];
 
@@ -144,28 +169,7 @@ WorldGenerator.prototype.preload = function(game) {
     filepaths.forEach(function(path) {
         var name = baseName + count++;
         var sprite = game.load.image(name, path);
-        this.obstacle.push(name);
+        WorldGenerator.obstacle.push(name);
     },this);
 };
 
-WorldGenerator.prototype.update = function(game) {
-    var view = game.camera;
-    this.groundSprite.tilePosition.x = -view.x;
-    this.groundSprite.tilePosition.y = -view.y;
-};
-
-WorldGenerator.prototype.playableRectangle = function() {
-    var half = this.playableSize/2;
-    return new Phaser.Rectangle(-half, -half, this.playableSize, this.playableSize);
-};
-
-WorldGenerator.prototype.worldBounds = function() {
-    var half = this.playableSize/2 + this.border/2;
-    var full = half * 2;
-    return new Phaser.Rectangle(-half, -half, full, full);
-};
-
-WorldGenerator.prototype.debug = function(game) { 
-    game.debug.geom(this.playableRectangle(), 'red', false);
-    game.debug.geom(this.worldBounds(), 'blue', false);
-};

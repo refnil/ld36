@@ -1,63 +1,80 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
+function Main(){
+    this.game = {};
 
-var worldGen = {};
-var player = {};
-var bullet = {};
+    this.worldGen = {};
+    this.player = {};
+    this.playerWeapon = {};
 
-var debug = true;
-var toggleDebug;
-var origin = new Phaser.Circle(0, 0, 25);
+    this.debug = false;
 
-function toggleDebugFun() {
-    if(debug)
-    {
-        game.debug.reset();
-    }
-    debug = !debug;
+    //"Private" member
+    this._origin = new Phaser.Circle(0, 0, 25);
 }
 
-function preload() {
-    game.load.script("src/world", null, function() {
-        worldGen = new WorldGenerator();
-        worldGen.preload(game);
+Main.prototype.start = function () {
+    this.game = new Phaser.Game(800, 600, Phaser.AUTO, '', this);
+};
+
+Main.prototype.preload = function () {
+    this.loadScript("WorldGenerator", "src/world.js");
+    this.loadScript("Player", "src/player.js");
+    this.loadScript("Weapon", "src/weapons.js");
+};
+
+Main.prototype.loadScript = function(className, path) {
+    this.game.load.script(path, path, function() {
+        var fn = window[className];
+        if(typeof fn === 'function'){
+            fn.preload(this.game);
+        }
+        else {
+            console.error("Problem with class: " + className);
+        }
     });
-    game.load.script("src/player", null, function() {
-        player = new Player();
-        player.preload(game);
-    });
-    game.load.script("src/weapons", null, function(){
-        bullet = new Weapon();
-        bullet.preload(game);
-    });
-}
+};
 
-function create() {
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    worldGen.generate(game);
-    player.generate(game);
-    bullet.create(game,player);
-    toggleDebug = game.input.keyboard.addKey(Phaser.Keyboard.P);
-    toggleDebug.onDown.add(toggleDebugFun);
-}
+Main.prototype.create = function() {
+    this.player = new Player();
+    this.worldGen = new WorldGenerator(this);
+    this.playerWeapon = new Weapon(this);
 
-function update() {
-    player.update(game);
-    bullet.update(game);
-    worldGen.update(game);
-    game.physics.arcade.collide(player.sprite, worldGen.terrainGroup);
-}
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+    this.worldGen.generate();
+    this.player.generate(this.game);
+    this.playerWeapon.create();
+    this.game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(Main.prototype.toggleDebug,this);
+};
 
-function render() {
-    if(debug){
+Main.prototype.update = function () {
+    this.player.update(this.game);
+    this.playerWeapon.update();
+    this.worldGen.update(this.game);
+
+    //Collision
+    this.game.physics.arcade.collide(this.player.sprite, this.worldGen.terrainGroup);
+};
+
+Main.prototype.render = function() {
+    if(this.debug){
         var x = 5;
         var y = 0;
         var yi = 32;
 
         // Camera
-        game.debug.cameraInfo(game.camera, x, y += yi);
-        game.debug.geom(origin,'rgba(266,0,0,1)');
+        this.game.debug.cameraInfo(this.game.camera, x, y += yi);
+        this.game.debug.geom(this._origin,'rgba(266,0,0,1)');
 
-        worldGen.debug(game);
+        this.worldGen.debug();
 
     }
-}
+};
+
+Main.prototype.toggleDebug = function() {
+    if(this.debug)
+    {
+        this.game.debug.reset();
+    }
+    this.debug = !this.debug;
+};;
+
+(new Main().start())

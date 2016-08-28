@@ -1,9 +1,13 @@
-function Weapon(){
+function Weapon(main){
+    this.main = main;
+    this.player = main.player;
+    this.input = main.game.input;
+
     this.speed = 100;
 }
 
-Weapon.prototype.create = function(game,player){
-    weapon = game.add.weapon(-1,'bullet');
+Weapon.prototype.create = function(){
+    weapon = this.main.game.add.weapon(-1,'bullet');
 
     weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
     
@@ -11,20 +15,20 @@ Weapon.prototype.create = function(game,player){
     
     weapon.fireRate = 300;
 
-    weapon.trackSprite(player.sprite,85,65, true);
+    weapon.trackSprite(this.player.sprite,85,65, true);
 
-    game.input.mouse.capture = true;
+    this.input.mouse.capture = true;
 
 };
 
-Weapon.prototype.update = function(game){
-    if (game.input.activePointer.leftButton.isDown)
+Weapon.prototype.update = function(){
+    if (this.input.activePointer.leftButton.isDown)
     {
-        weapon.fireAtPointer(game.input.mousePointer);
+        weapon.fireAtPointer(this.input.mousePointer);
     }
 };
 
-Weapon.prototype.preload = function(game){
+Weapon.preload = function(game){
     game.load.image('bullet','assets/tower-defense-top-down/PNG/Retina/towerDefense_tile272.png');
 };
 

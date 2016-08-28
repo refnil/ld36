@@ -24,7 +24,7 @@ Player.prototype.generate = function(game){
     W = game.input.keyboard.addKey(Phaser.KeyCode.W);
 };
 
-Player.prototype.preload = function(game){
+Player.preload = function(game){
     game.load.image('player','assets/medieval-rts/PNG/Retina/Unit/medievalUnit_02.png');
 };
 
