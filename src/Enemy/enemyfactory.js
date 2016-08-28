@@ -1,13 +1,15 @@
 function EnemyFactory () {}
 
 EnemyFactory.createStrong = function(main, time) {
-    var e = EnemyFactory.getSprite(main, "enemy1"); 
-    return new Enemy(main,e);
+    var s = EnemyFactory.getSprite(main, "enemy1"); 
+    return new Enemy(main,s);
 }
 
 EnemyFactory.createMinion = function(main, time, leader) { 
-    var e = EnemyFactory.getSprite(main, "enemy1"); 
-    return new Enemy(main,e);
+    var s = EnemyFactory.getSprite(main, "enemy1"); 
+    var e = new Enemy(main,s);
+    e.leader = leader;
+    return e;
 }
 
 
@@ -19,6 +21,7 @@ EnemyFactory.getSprite = function(main, spriteName) {
     e.anchor.y = 0.5;
     e.body.bounce.set(1);
     e.body.setSize(64,64,32,32);
+    e.body.setCircle(32);
     return e;
 }
 

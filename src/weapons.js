@@ -3,13 +3,17 @@ function Weapon(main){
     this.player = main.player;
     this.input = main.game.input;
 
+    this.damage = 10;
+
     this.speed = 100;
 }
 
 Weapon.prototype.create = function(){
-    this.weapon = this.main.game.add.weapon(-1,'bullet');
+    this.weapon = this.main.game.add.weapon(35,'bullet');
 
     this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+    this.weapon.bullets.enableBody = true;
+    this.weapon.bullets.physicsBodyType = Phaser.Physics.ARCADE;
     
     this.weapon.bulletSpeed = 700;
     
@@ -33,10 +37,21 @@ Weapon.prototype.update = function(){
     }
 };
 
+Weapon.bulletHitKill = function(bullet, other) {
+    bullet.kill();
+}
+
+Weapon.bulletHitEnemy = function(bullet, enemy) {
+    bullet.kill();
+    enemy.enemy.hit(10);
+}
+
 Weapon.preload = function(game){
     game.load.image('bullet','assets/tower-defense-top-down/PNG/Retina/towerDefense_tile272.png');
 };
 
 function scaleBullet(sprite,weapon){
     sprite.scale.setTo(0.5,0.5);
+    sprite.body.setSize(64,64,32,32);
+    sprite.body.setCircle(16);
 };

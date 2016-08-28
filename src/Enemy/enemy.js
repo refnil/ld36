@@ -9,8 +9,12 @@ function Enemy(main, sprite, maxLife, speed, weapon, leader) {
     this.weapon = weapon || null;
     this.leader = leader || null;
 
+
+    this.wantedMaxDistanceToTarget = 300;
+
     this.life = this.maxLife;
     this.target = null;
+    this.objectivePosition = {};
     this.lastPos = null;
 
     sprite.enemy = this;
@@ -43,24 +47,40 @@ Enemy.prototype.shoot = function() {
 
 Enemy.prototype.findTarget = function() {
     this.target = this.main.player;
+    this.findObjectivePosition();
+}
 
+Enemy.prototype.findObjectivePosition = function() {
+
+    var tx = this.target.sprite.centerX;
+    var ty = this.target.sprite.centerY;
+    var dist = this.wantedMaxDistanceToTarget;
+
+    this.objectivePosition.x = this.main.game.rnd.between(tx - dist, tx + dist);
+    this.objectivePosition.y = this.main.game.rnd.between(ty - dist, tx + dist);
 }
 
 Enemy.prototype.moveToTarget = function() { 
-    if(this.lastPos == null) {
-        this.lastPos = {'x':this.sprite, 'y':this.sprite.y};
-    }
-    else{
-        var tx = this.target.sprite.centerX;
-        var ty = this.target.sprite.centerY;
 
-        if(this.arcade.distanceToXY(this.sprite, tx, ty) > 70){
-            this.sprite.rotation = this.arcade.moveToXY(this.sprite, tx, ty, this.speed);
-        }
-        else {
-            this.sprite.body.velocity.x = 0;
-            this.sprite.body.velocity.y = 0;
-        }
+    var ox = this.objectivePosition.x;
+    var oy = this.objectivePosition.y;
+
+    if (this.arcade.distanceToXY(this.target.sprite, ox, oy) > this.wantedMaxDistanceToTarget) {
+        this.findObjectivePosition();
+    }
+    else if(this.arcade.distanceToXY(this.sprite, ox, oy) > 70){
+        this.sprite.rotation = this.arcade.moveToXY(this.sprite, ox, oy, this.speed);
+    }
+    else {
+        this.findObjectivePosition();
+
+    }
+}
+
+Enemy.prototype.hit = function(damage) {
+    this.life -= damage;
+    if(this.life <= 0) {
+        this.sprite.destroy();
     }
 }
 

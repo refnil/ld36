@@ -69,7 +69,8 @@ Main.prototype.update = function () {
     //Collision
     this.game.physics.arcade.collide(this.player.sprite, this.worldGen.terrainGroup);
     this.game.physics.arcade.collide(this.enemiesGroup, this.worldGen.terrainGroup);
-    //this.game.physics.arcade.collide(this.playerWeapon.bullets, this.worldGen.terrainGroup);
+    this.game.physics.arcade.collide(this.playerWeapon.weapon.bullets, this.enemiesGroup, Weapon.bulletHitEnemy);
+    this.game.physics.arcade.collide(this.playerWeapon.weapon.bullets, this.worldGen.terrainGroup, Weapon.bulletHitKill);
 
 };
 
@@ -84,7 +85,10 @@ Main.prototype.render = function() {
         this.game.debug.geom(this._origin,'rgba(266,0,0,1)');
 
         this.worldGen.debug();
+        this.player.debug(this.game);
 
+        this.enemiesGroup.forEach(function(e) {this.game.debug.body(e,false);}, this);
+        this.playerWeapon.weapon.bullets.forEach(function(e) {this.game.debug.body(e, 'red', false);}, this);
     }
 };
 

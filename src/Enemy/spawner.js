@@ -35,14 +35,14 @@ Spawner.prototype.continueWave = function () {
 
     if(this.remainingInWave.length == 0) {
         console.log("Wave ended");
-        //this.inWave = false;
+        this.inWave = false;
     }
     else if(currentTime > this.lastTime + 2){
         var enemy = this.remainingInWave.shift();
-        this.enemyGroup.add(enemy.sprite);
         enemy.sprite.x =  this.x;
         enemy.sprite.y =  this.y;
         enemy.sprite.exists = true;
+        this.enemyGroup.add(enemy.sprite);
         this.lastTime = currentTime;
     }
 }

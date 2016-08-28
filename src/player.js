@@ -12,6 +12,7 @@ Player.prototype.generate = function(game){
     
     game.physics.arcade.enable(this.sprite);
     this.sprite.body.setSize(64,64,32,32);
+    //this.sprite.body.setCircle(32);
 
     cursors = game.input.keyboard.createCursorKeys();
     
@@ -27,6 +28,10 @@ Player.prototype.generate = function(game){
 Player.preload = function(game){
     game.load.image('player','assets/medieval-rts/PNG/Retina/Unit/medievalUnit_02.png');
 };
+
+Player.prototype.debug = function(game) {
+    game.debug.body(this.sprite, 'yellow', false);
+}
 
 Player.prototype.update = function(game){
 

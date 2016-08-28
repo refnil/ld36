@@ -1,13 +1,13 @@
 function WorldGenerator(main, playableSize, border) {
     this.main = main;
 
-    this.playableSize = playableSize || 800;
+    this.playableSize = playableSize || 2000;
     this.border = border || 128;
 
     this.terrainGroup = null;
     this.groundSprite = null;
 
-    this.numberSpawner = 1;
+    this.numberSpawner = 10;
 
     this.spawners = []
 }
@@ -158,6 +158,7 @@ WorldGenerator.prototype.createTerrain = function(x, y){
     var sprite = this.terrainGroup.create(x,y,this.randomObstacle());
     sprite.body.immovable = true;
     sprite.body.setSize(64,64,32,32);
+    //sprite.body.setCircle(32);
 };
 
 WorldGenerator.prototype.update = function() {
@@ -180,6 +181,7 @@ WorldGenerator.prototype.worldBounds = function() {
 WorldGenerator.prototype.debug = function() { 
     this.main.game.debug.geom(this.playableRectangle(), 'red', false);
     this.main.game.debug.geom(this.worldBounds(), 'blue', false);
+    this.terrainGroup.forEach(function(t) {this.main.game.debug.body(t, 'blue');},this);
 };
 
 WorldGenerator.ground = "ground";
