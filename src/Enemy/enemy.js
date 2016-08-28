@@ -9,7 +9,6 @@ function Enemy(main, sprite, maxLife, speed, weapon, leader) {
     this.weapon = weapon || null;
     this.leader = leader || null;
 
-
     this.wantedMaxDistanceToTarget = 300;
 
     this.life = this.maxLife;
@@ -76,6 +75,15 @@ Enemy.prototype.moveToTarget = function() {
 
     }
 }
+
+Enemy.prototype.render = function () {
+    if(this.life < this.maxLife) {
+        var x = this.sprite.centerX;
+        var y = this.sprite.top;
+        Lifebar.draw(this.game, x, y, this.life/this.maxLife);
+    }
+}
+
 
 Enemy.prototype.hit = function(damage) {
     this.life -= damage;

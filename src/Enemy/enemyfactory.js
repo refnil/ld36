@@ -6,7 +6,7 @@ EnemyFactory.createStrong = function(main, time) {
 }
 
 EnemyFactory.createMinion = function(main, time, leader) { 
-    var s = EnemyFactory.getSprite(main, "enemy1"); 
+    var s = EnemyFactory.getSprite(main, "enemy2"); 
     var e = new Enemy(main,s);
     e.leader = leader;
     return e;
@@ -27,4 +27,5 @@ EnemyFactory.getSprite = function(main, spriteName) {
 
 EnemyFactory.preload = function (game) { 
     game.load.image('enemy1','assets/tower-defense-top-down/PNG/Retina/towerDefense_tile246.png');
+    game.load.image('enemy2','assets/tower-defense-top-down/PNG/Retina/towerDefense_tile247.png');
 }

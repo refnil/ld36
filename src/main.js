@@ -24,6 +24,8 @@ Main.prototype.preload = function () {
     this.loadScript("Spawner", "src/Enemy/spawner.js");
     this.loadScript("EnemyFactory", "src/Enemy/enemyfactory.js");
     this.loadScript("Enemy", "src/Enemy/enemy.js");
+    this.loadScript("Lifebar", "src/lifebar.js");
+
 };
 
 Main.prototype.loadScript = function(className, path) {
@@ -90,6 +92,8 @@ Main.prototype.render = function() {
         this.enemiesGroup.forEach(function(e) {this.game.debug.body(e,false);}, this);
         this.playerWeapon.weapon.bullets.forEach(function(e) {this.game.debug.body(e, 'red', false);}, this);
     }
+
+    this.enemiesGroup.forEach(function(e) { e.enemy.render(); });
 };
 
 Main.prototype.toggleDebug = function() {
