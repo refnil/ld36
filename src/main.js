@@ -4,6 +4,8 @@ function Main(){
     this.worldGen = {};
     this.player = {};
     this.playerWeapon = {};
+    this.enemiesGroup = {};
+    this.spawners = [];
 
     this.debug = false;
 
@@ -19,6 +21,9 @@ Main.prototype.preload = function () {
     this.loadScript("WorldGenerator", "src/world.js");
     this.loadScript("Player", "src/player.js");
     this.loadScript("Weapon", "src/weapons.js");
+    this.loadScript("Spawner", "src/Enemy/spawner.js");
+    this.loadScript("EnemyFactory", "src/Enemy/enemyfactory.js");
+    this.loadScript("Enemy", "src/Enemy/enemy.js");
 };
 
 Main.prototype.loadScript = function(className, path) {
@@ -34,14 +39,22 @@ Main.prototype.loadScript = function(className, path) {
 };
 
 Main.prototype.create = function() {
-    this.player = new Player();
-    this.worldGen = new WorldGenerator(this);
-    this.playerWeapon = new Weapon(this);
-
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    this.enemiesGroup = this.game.add.group();
+    this.enemiesGroup.enableBody = true;
+    this.enemiesGroup.physicsBodyType = Phaser.Physics.ARCADE;
+
+    this.worldGen = new WorldGenerator(this);
     this.worldGen.generate();
+
+    this.player = new Player();
     this.player.generate(this.game);
+
+    this.playerWeapon = new Weapon(this);
     this.playerWeapon.create();
+
+    this.spawners = this.worldGen.spawners;
     this.game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(Main.prototype.toggleDebug,this);
 };
 
@@ -50,8 +63,14 @@ Main.prototype.update = function () {
     this.playerWeapon.update();
     this.worldGen.update();
 
+    this.spawners.forEach(function(s) {s.update();});
+    this.enemiesGroup.forEach(function(e) {e.enemy.update();});
+
     //Collision
     this.game.physics.arcade.collide(this.player.sprite, this.worldGen.terrainGroup);
+    this.game.physics.arcade.collide(this.enemiesGroup, this.worldGen.terrainGroup);
+    //this.game.physics.arcade.collide(this.playerWeapon.bullets, this.worldGen.terrainGroup);
+
 };
 
 Main.prototype.render = function() {
@@ -77,4 +96,5 @@ Main.prototype.toggleDebug = function() {
     this.debug = !this.debug;
 };;
 
-(new Main().start())
+var root = new Main();
+root.start();

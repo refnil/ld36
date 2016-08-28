@@ -6,6 +6,10 @@ function WorldGenerator(main, playableSize, border) {
 
     this.terrainGroup = null;
     this.groundSprite = null;
+
+    this.numberSpawner = 1;
+
+    this.spawners = []
 }
 
 
@@ -13,7 +17,7 @@ WorldGenerator.prototype.generate = function() {
 
     this.terrainGroup = this.main.game.add.group();
     this.terrainGroup.enableBody = true;
-    this.physicsBodyType = Phaser.Physics.ARCADE;
+    this.terrainGroup.physicsBodyType = Phaser.Physics.ARCADE;
 
     var bounds = this.worldBounds();
 
@@ -76,18 +80,50 @@ WorldGenerator.prototype.makeBounds = function() {
     //border decoration
     var distance = 64;
 
+    var spawnerHor = Math.ceil(this.numberSpawner/2);
+    var skipTop = 0;
+    var skipBot = 0;
     for(var x = xleft; x <= xright; x += distance)
     {
-        position.push({'x': x, 'y':ybot});
-        position.push({'x': x, 'y':ytop});
+        //Start spawner
+        if(spawnerHor > 0 && Math.abs(x) < this.playableSize/2) {
+            var rand = this.main.game.rnd.integerInRange(0,10);
+            if (rand == 0 && skipTop == 0) {
+                console.log("Spawner top");
+                skipTop = 1;
+                spawnerHor --;
+                this.spawners.push(new Spawner(this.main,x+distance/2,ytop));
+            }
+            else if(rand == 1 && skipBot == 0)
+            {
+                console.log("Spawner bot");
+                skipBot = 1;
+                spawnerHor --;
+                this.spawners.push(new Spawner(this.main,x+distance/2,ybot));
+            }
+        }
+
+        if(skipBot == 0) {
+            position.push({'x': x, 'y':ybot});
+        }
+        else {
+            skipBot = (skipBot + 1)%3;
+        }
+        if(skipTop == 0) {
+            position.push({'x': x, 'y':ytop});
+        }
+        else {
+            skipTop = (skipTop + 1)%3;
+        }
     }
 
+
+    var spawnerVer = Math.floor(this.numberSpawner/2);
     for(var y = ytop+distance; y <= ybot-distance; y += distance)
     {
         position.push({'x': xleft, 'y':y});
         position.push({'x': xright, 'y':y});
     }
-
 
     obstacle = WorldGenerator.obstacle;
     position.sort(function(pos1, pos2) {
