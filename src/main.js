@@ -61,15 +61,16 @@ Main.prototype.create = function() {
     this.playerWeapon = new Weapon(this);
     this.playerWeapon.create();
 
-    this.panel = new Panel(this);
-    this.panel.generate();
-
     this.itemGroup = this.game.add.group();
     this.itemGroup.enableBody = true;
     this.itemGroup.physicsBodyType = Phaser.Physics.ARCADE;
 
+    this.panel = new Panel(this);
+    this.panel.generate();
+
     this.spawners = this.worldGen.spawners;
     this.game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(Main.prototype.toggleDebug,this);
+
 };
 
 Main.prototype.update = function () {
