@@ -43,7 +43,7 @@ function create() {
 
 function update() {
     player.update(game);
-    bullet.update(game);
+    bullet.update(game,player);
     worldGen.update(game);
     game.physics.arcade.collide(player.sprite, worldGen.terrainGroup);
 }
