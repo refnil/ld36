@@ -46,9 +46,9 @@ Main.prototype.create = function() {
 };
 
 Main.prototype.update = function () {
-    this.player.update(this.game);
+    this.player.update();
     this.playerWeapon.update();
-    this.worldGen.update(this.game);
+    this.worldGen.update();
 
     //Collision
     this.game.physics.arcade.collide(this.player.sprite, this.worldGen.terrainGroup);
