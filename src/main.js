@@ -110,13 +110,19 @@ Main.prototype.render = function() {
     this.enemiesGroup.forEach(function(e) { e.enemy.render(); });
 };
 
+Main.prototype.getCameraRectangle = function() {
+    var cam = this.game.camera.view.clone();
+    cam.right -= 200;
+    return cam;
+}
+
 Main.prototype.toggleDebug = function() {
     if(this.debug)
     {
         this.game.debug.reset();
     }
     this.debug = !this.debug;
-};;
+};
 
 var root = new Main();
 root.start();
