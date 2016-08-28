@@ -4,6 +4,7 @@ function Main(){
     this.worldGen = {};
     this.player = {};
     this.playerWeapon = {};
+    this.panel = {};
 
     this.debug = false;
 
@@ -19,6 +20,7 @@ Main.prototype.preload = function () {
     this.loadScript("WorldGenerator", "src/world.js");
     this.loadScript("Player", "src/player.js");
     this.loadScript("Weapon", "src/weapons.js");
+    this.loadScript("Panel", "src/panel.js");
 };
 
 Main.prototype.loadScript = function(className, path) {
@@ -37,11 +39,13 @@ Main.prototype.create = function() {
     this.player = new Player();
     this.worldGen = new WorldGenerator(this);
     this.playerWeapon = new Weapon(this);
+    this.panel = new Panel(this);
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     this.worldGen.generate();
     this.player.generate(this.game);
     this.playerWeapon.create();
+    this.panel.generate();
     this.game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(Main.prototype.toggleDebug,this);
 };
 

@@ -1,9 +1,10 @@
 function WorldGenerator(main, playableSize, border) {
     this.main = main;
 
-    this.playableSize = playableSize || 800;
+    this.playableSize = playableSize || 1200;
     this.border = border || 128;
 
+    this.ui = 200;
     this.terrainGroup = null;
     this.groundSprite = null;
 }
@@ -17,7 +18,7 @@ WorldGenerator.prototype.generate = function() {
 
     var bounds = this.worldBounds();
 
-    this.main.game.world.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+    this.main.game.world.setBounds(bounds.x, bounds.y, bounds.width+200, bounds.height);
 
     this.groundSprite = this.main.game.add.tileSprite(0,0,this.main.game.camera.width,this.main.game.camera.height,WorldGenerator.ground);
     this.groundSprite.fixedToCamera = true;
