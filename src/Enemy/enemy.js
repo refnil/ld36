@@ -4,7 +4,7 @@ function Enemy(main, sprite, maxLife, speed, weapon, leader) {
     this.arcade = this.game.physics.arcade;
 
     this.sprite = sprite;
-    this.maxLife = maxLife || 100;
+    this.maxLife = maxLife || 40;
     this.speed = speed || 200;
     this.weapon = weapon || null;
     this.leader = leader || null;
@@ -80,7 +80,8 @@ Enemy.prototype.render = function () {
     if(this.life < this.maxLife) {
         var x = this.sprite.centerX;
         var y = this.sprite.top;
-        Lifebar.draw(this.game, x, y, this.life/this.maxLife);
+        
+        Lifebar.draw(this.main, x, y, this.life/this.maxLife);
     }
 }
 
